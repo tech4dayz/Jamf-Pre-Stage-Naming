@@ -4,7 +4,7 @@
 LoggedInUser=$(stat -f%Su /dev/console)
 LoggedInUID=$(id -u "$LoggedInUser")
 
-#set computer name variable and sudo for currently login user
+#set computerName variable, sudos for currently login user, calls applescript tool osascript for prompt to current user for name change
 computerName=$(/bin/launchctl asuser "$LoggedInUID" sudo -iu "$LoggedInUser" /usr/bin/osascript -e 'Tell application "System Events" to display dialog "Please enter computer name and click Submit:" default answer "" buttons {"Submit"} with icon caution' -e 'text returned of result' 2>/dev/null)
 
 #rename mac
