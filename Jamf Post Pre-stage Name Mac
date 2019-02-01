@@ -1,0 +1,19 @@
+#!/bin/bash
+
+#get current user ID
+LoggedInUser=$(stat -f%Su /dev/console)
+LoggedInUID=$(id -u "$LoggedInUser")
+
+#set computer name variable and sudo for currently login user
+computerName=$(/bin/launchctl asuser "$LoggedInUID" sudo -iu "$LoggedInUser" /usr/bin/osascript -e 'Tell application "System Events" to display dialog "Please enter computer name and click Submit:" default answer "" buttons {"Submit"} with icon caution' -e 'text returned of result' 2>/dev/null)
+
+#rename mac
+/usr/sbin/scutil --set ComputerName "${computerName}"
+/usr/sbin/scutil --set LocalHostName "${computerName}"
+/usr/sbin/scutil --set HostName "${computerName}"
+
+#flush local DNS cache
+dscacheutil -flushcache
+
+echo "Computer name has been set.."
+echo "<result>' scutil --get ComputerName'</result>"
